@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <ul id="content">
+
+    </ul>
+    <input type="text" id="msg">
+    <button onclick="send()">发送</button>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdn.bootcss.com/socket.io/2.3.0/socket.io.js"></script>
+    <script>
+        const inputMsg = document.querySelector('#msg');
+        const ul = document.getElementById('content');
+        // const ws = new WebSocket('ws://localhost:8080');
+        // ws.onopen = (res) => {
+        //     console.log('连接成功!', res);
+        // }
+        // ws.onmessage = (msg) => {
+        //     const li = document.createElement('li');
+        //     li.innerHTML = msg.data;
+        //     ul.appendChild(li);
+        // }
+        const socket = io('ws://localhost:8080');
+        socket.on('connect', function () {
+            console.log('连接成功');
+        });
+        socket.on('msg', function ({data}) {
+            const li = document.createElement('li');
+            li.innerHTML = data;
+            ul.appendChild(li);
+        });
+        socket.on('disconnect', function () { });
+
+        const send = () => {
+            socket.emit('send', inputMsg.value);
+            inputMsg.value = '';
+        }
+    </script>
+</body>
+
+</html>
